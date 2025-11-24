@@ -22,6 +22,7 @@ type ReportCategory =
 type ReportItem = {
   title: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  slug?: string;
 };
 
 const REPORT_SECTIONS: { key: ReportCategory; title: string; items: ReportItem[] }[] = [
@@ -29,22 +30,24 @@ const REPORT_SECTIONS: { key: ReportCategory; title: string; items: ReportItem[]
     key: 'keuangan',
     title: 'Laporan Keuangan',
     items: [
-      { title: 'Arus Keuangan', icon: 'swap-horizontal' },
-      { title: 'Pendapatan Transaksi', icon: 'credit-card-multiple-outline' },
-      { title: 'Pendapatan Lain', icon: 'wallet-plus' },
-      { title: 'Pengeluaran', icon: 'cash-minus' },
-      { title: 'Chart of Account', icon: 'chart-bubble' },
+      { title: 'Analisa Omzet', icon: 'chart-line', slug: 'analisa-omzet' },
+      { title: 'Arus Keuangan', icon: 'swap-horizontal', slug: 'arus-keuangan' },
+      { title: 'Pendapatan Transaksi', icon: 'credit-card-multiple-outline', slug: 'pendapatan-transaksi' },
+      { title: 'Pendapatan Jual Produk', icon: 'cart-check', slug: 'pendapatan-jual-produk' },
+      { title: 'Pendapatan Lain', icon: 'wallet-plus', slug: 'pendapatan-lain' },
+      { title: 'Pengeluaran', icon: 'cash-minus', slug: 'pengeluaran' },
+      { title: 'Chart of Account', icon: 'chart-bubble', slug: 'chart-of-account' },
     ],
   },
   {
     key: 'transaksi',
     title: 'Laporan Transaksi',
     items: [
-      { title: 'Semua Data Transaksi', icon: 'file-document-outline' },
-      { title: 'Transaksi Jadi Produk', icon: 'tshirt-crew-outline' },
-      { title: 'Transaksi Ditolak/Dibatalkan', icon: 'close-octagon-outline' },
-      { title: 'Faktur Yang Ditagihkan', icon: 'note-text-outline' },
-      { title: 'Top Layanan', icon: 'star-circle-outline' },
+      { title: 'Semua Data Transaksi', icon: 'file-document-outline', slug: 'semua-data' },
+      { title: 'Transaksi Jual Produk', icon: 'tshirt-crew-outline', slug: 'jual-produk' },
+      { title: 'Transaksi Ditolak/Dibatalkan', icon: 'close-octagon-outline', slug: 'ditolak' },
+      { title: 'Faktur Yang Ditagihkan', icon: 'note-text-outline', slug: 'faktur-ditagihkan' },
+      { title: 'Top Layanan', icon: 'star-circle-outline', slug: 'top-layanan' },
     ],
   },
   {
@@ -159,14 +162,37 @@ export default function ReportsScreen() {
                 </Pressable>
                 {isExpanded ? (
                   <View style={styles.itemsContainer}>
-                    {section.items.map((item) => (
-                      <Pressable key={item.title} style={styles.itemRow}>
-                        <View style={styles.itemLeft}>
-                          <MaterialCommunityIcons name={item.icon} size={20} color="#4B5C8B" />
-                          <Text style={styles.itemText}>{item.title}</Text>
-                        </View>
-                      </Pressable>
-                    ))}
+                    {section.items.map((item) => {
+                      const isFinance = section.key === 'keuangan' && item.slug;
+                      const isChart = item.slug === 'chart-of-account';
+                      const isTransaction = section.key === 'transaksi' && item.slug;
+                      const isLink = (isFinance || isTransaction) && item.slug;
+                      return (
+                        <Pressable
+                          key={item.title}
+                          style={({ pressed }) => [
+                            styles.itemRow,
+                            pressed && isLink && styles.itemRowPressed,
+                          ]}
+                          disabled={!isLink}
+                          onPress={() => {
+                            if (!isLink) return;
+                            const params = { ...(userName ? { user: userName } : {}), slug: item.slug! };
+                            if (isChart) {
+                              router.push({ pathname: '/reports/chart-of-account', params });
+                            } else if (isFinance) {
+                              router.push({ pathname: '/reports/finance/[slug]', params });
+                            } else if (isTransaction) {
+                              router.push({ pathname: '/reports/transactions/[slug]', params });
+                            }
+                          }}>
+                          <View style={styles.itemLeft}>
+                            <MaterialCommunityIcons name={item.icon} size={20} color="#4B5C8B" />
+                            <Text style={styles.itemText}>{item.title}</Text>
+                          </View>
+                        </Pressable>
+                      );
+                    })}
                   </View>
                 ) : null}
                 {idx < REPORT_SECTIONS.length - 1 ? <View style={styles.divider} /> : null}
@@ -176,7 +202,7 @@ export default function ReportsScreen() {
         </View>
       </ScrollView>
 
-      <View style={[styles.bottomNav, { paddingBottom: 10 + insets.bottom }]}>
+      <View style={[styles.bottomNav, { paddingBottom: 16 + insets.bottom }]}>
         {navItems.map((item) => (
           <Pressable
             key={item.label}
@@ -235,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
     paddingVertical: 14,
   },
   headerLogo: {
@@ -315,6 +341,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+  },
+  itemRowPressed: {
+    backgroundColor: '#EEF3FF',
   },
   itemLeft: {
     flexDirection: 'row',
@@ -339,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
@@ -376,10 +407,10 @@ const navItems: {
   label: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   prominent?: boolean;
-  route?: '/home' | '/reports' | '/account';
+  route?: '/home' | '/orders' | '/reports' | '/account';
 }[] = [
   { label: 'Beranda', icon: 'home-variant', route: '/home' },
-  { label: 'Pesanan', icon: 'clipboard-list-outline' },
+  { label: 'Pesanan', icon: 'clipboard-list-outline', route: '/orders' },
   { label: 'Tambah', icon: 'plus-circle', prominent: true },
   { label: 'Laporan', icon: 'chart-line', route: '/reports' },
   { label: 'Akun', icon: 'account-outline', route: '/account' },
