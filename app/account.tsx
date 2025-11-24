@@ -141,7 +141,7 @@ export default function AccountScreen() {
         </View>
       </ScrollView>
 
-      <View style={[styles.bottomNav, { paddingBottom: 10 + insets.bottom }]}>
+      <View style={[styles.bottomNav, { paddingBottom: 16 + insets.bottom }]}>
         {navItems.map((item) => (
           <Pressable
             key={item.label}
@@ -173,10 +173,10 @@ const navItems: {
   label: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   prominent?: boolean;
-  route?: '/home' | '/reports' | '/account';
+  route?: '/home' | '/orders' | '/reports' | '/account';
 }[] = [
   { label: 'Beranda', icon: 'home-variant', route: '/home' },
-  { label: 'Pesanan', icon: 'clipboard-list-outline' },
+  { label: 'Pesanan', icon: 'clipboard-list-outline', route: '/orders' },
   { label: 'Tambah', icon: 'plus-circle', prominent: true },
   { label: 'Laporan', icon: 'chart-line', route: '/reports' },
   { label: 'Akun', icon: 'account-outline', route: '/account' },
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
     paddingVertical: 14,
   },
   headerLogo: {
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
