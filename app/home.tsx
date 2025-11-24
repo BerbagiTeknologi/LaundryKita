@@ -23,6 +23,7 @@ type ActionItem = {
   label: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   badge?: number;
+  targetTab?: 'konfirmasi' | 'penjemputan' | 'validasi' | 'antrian' | 'proses' | 'siap-ambil' | 'siap-antar';
 };
 
 const SECTION_ORDER: SectionKey[] = ['keuangan', 'transaksi', 'kepegawaian'];
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
     paddingVertical: 14,
   },
   headerLogo: {
@@ -390,12 +391,13 @@ const SECTION_DATA: Record<
       { label: '1 Terlambat', value: 'Terlambat', icon: 'clock-alert' },
     ],
     actions: [
-      { label: 'Konfirmasi', icon: 'check-decagram', badge: 0 },
-      { label: 'Penjemputan', icon: 'map-marker-path', badge: 1 },
-      { label: 'Antrian', icon: 'clipboard-list-outline', badge: 3 },
-      { label: 'Proses', icon: 'tshirt-crew-outline', badge: 1 },
-      { label: 'Siap Ambil', icon: 'bag-personal-outline', badge: 1 },
-      { label: 'Siap Antar', icon: 'truck-delivery-outline', badge: 1 },
+      { label: 'Konfirmasi', icon: 'check-decagram', badge: 0, targetTab: 'konfirmasi' },
+      { label: 'Penjemputan', icon: 'map-marker-path', badge: 1, targetTab: 'penjemputan' },
+      { label: 'Validasi', icon: 'clipboard-check-outline', badge: 0, targetTab: 'validasi' },
+      { label: 'Antrian', icon: 'clipboard-list-outline', badge: 3, targetTab: 'antrian' },
+      { label: 'Proses', icon: 'tshirt-crew-outline', badge: 1, targetTab: 'proses' },
+      { label: 'Siap Ambil', icon: 'bag-personal-outline', badge: 1, targetTab: 'siap-ambil' },
+      { label: 'Siap Antar', icon: 'truck-delivery-outline', badge: 1, targetTab: 'siap-antar' },
     ],
         footer: (
       <View style={styles.topCustomerCard}>
@@ -587,19 +589,32 @@ export default function HomeScreen() {
 
         {section.actions.length > 0 ? (
           <View style={styles.actionsGrid}>
-            {section.actions.map((action) => (
-              <View key={action.label} style={styles.actionItem}>
-                <View style={styles.actionIconWrapper}>
-                  <MaterialCommunityIcons name={action.icon} size={34} color="#0A4DA8" />
-                  {action.badge ? (
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{action.badge}</Text>
-                    </View>
-                  ) : null}
-                </View>
-                <Text style={styles.actionLabel}>{action.label}</Text>
-              </View>
-            ))}
+            {section.actions.map((action) => {
+              const handlePress = () => {
+                if (action.targetTab) {
+                  const params = { user: userName, tab: action.targetTab };
+                  router.push({ pathname: '/orders', params });
+                }
+              };
+              const clickable = Boolean(action.targetTab);
+              return (
+                <Pressable
+                  key={action.label}
+                  style={styles.actionItem}
+                  onPress={handlePress}
+                  disabled={!clickable}>
+                  <View style={styles.actionIconWrapper}>
+                    <MaterialCommunityIcons name={action.icon} size={34} color="#0A4DA8" />
+                    {action.badge ? (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{action.badge}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <Text style={styles.actionLabel}>{action.label}</Text>
+                </Pressable>
+              );
+            })}
           </View>
         ) : null}
 
@@ -638,10 +653,10 @@ const navItems: {
   label: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   prominent?: boolean;
-  route?: '/home' | '/reports' | '/account';
+  route?: '/home' | '/orders' | '/reports' | '/account';
 }[] = [
   { label: 'Beranda', icon: 'home-variant', route: '/home' },
-  { label: 'Pesanan', icon: 'clipboard-list-outline' },
+  { label: 'Pesanan', icon: 'clipboard-list-outline', route: '/orders' },
   { label: 'Tambah', icon: 'plus-circle', prominent: true },
   { label: 'Laporan', icon: 'chart-line', route: '/reports' },
   { label: 'Akun', icon: 'account-outline', route: '/account' },
