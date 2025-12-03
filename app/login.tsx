@@ -78,13 +78,24 @@ export default function AuthScreen() {
     try {
       const result = await loginRequest({ email, password });
       const displayName = result.user?.name ?? email;
+      const roleFromApi =
+        (result.user?.role as string | undefined) ??
+        (result.user?.is_owner ? 'pemilik' : undefined) ??
+        (result.role as string | undefined);
+      const isOwner =
+        roleFromApi?.toLowerCase() === 'pemilik' ||
+        roleFromApi?.toLowerCase() === 'owner' ||
+        result.user?.is_owner === true ||
+        activeRole === 'pemilik';
+      const targetRoute = isOwner ? '/home' : '/home-pegawai';
+
       if (result.token) {
         await saveSession(result.token, displayName);
       }
       setStatus('success');
       if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
       navTimeoutRef.current = setTimeout(() => {
-        router.replace({ pathname: '/home', params: { user: displayName } });
+        router.replace({ pathname: targetRoute, params: { user: displayName } });
       }, 900);
       // TODO: simpan token result.token ke secure storage atau context.
     } catch (error) {

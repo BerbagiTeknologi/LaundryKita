@@ -54,41 +54,43 @@ const REPORT_SECTIONS: { key: ReportCategory; title: string; items: ReportItem[]
     key: 'persediaan',
     title: 'Laporan Persediaan',
     items: [
-      { title: 'Pembelian Produk', icon: 'cart-outline' },
-      { title: 'Persediaan Produk', icon: 'tray-full' },
-      { title: 'Nilai Persediaan Produk', icon: 'scale-balance' },
-      { title: 'Stok Opname', icon: 'inbox-arrow-up-outline' },
+      { title: 'Pembelian Produk', icon: 'cart-outline', slug: 'pembelian-produk' },
+      { title: 'Persediaan Produk', icon: 'tray-full', slug: 'persediaan-produk' },
+      { title: 'Nilai Persediaan Produk', icon: 'scale-balance', slug: 'nilai-persediaan' },
+      { title: 'Stok Opname', icon: 'inbox-arrow-up-outline', slug: 'stok-opname' },
     ],
   },
   {
     key: 'pegawai',
     title: 'Laporan Pegawai',
     items: [
-      { title: 'Bagian Pegawai', icon: 'account-group' },
-      { title: 'Pembagian Produk', icon: 'hand-heart' },
-      { title: 'Rekap Presensi', icon: 'calendar-check-outline' },
-      { title: 'Rekap Lembur', icon: 'clock-plus-outline' },
+      { title: 'Bagian Pegawai', icon: 'account-group', slug: 'bagian-pegawai' },
+      { title: 'Bagian Admin', icon: 'account-tie', slug: 'bagian-admin' },
+      { title: 'Bagian Produksi', icon: 'factory', slug: 'bagian-produksi' },
+      { title: 'Bagian Kurir', icon: 'motorbike', slug: 'bagian-kurir' },
+      { title: 'Rekap Absensi', icon: 'calendar-check-outline', slug: 'rekap-absensi' },
+      { title: 'Rekap Lembur', icon: 'clock-plus-outline', slug: 'rekap-lembur' },
     ],
   },
   {
     key: 'pelanggan',
     title: 'Laporan Pelanggan',
     items: [
-      { title: 'Pertumbuhan Pelanggan', icon: 'account-multiple-plus-outline' },
-      { title: 'Top Pelanggan', icon: 'trophy' },
-      { title: 'Riwayat Faktur Pelanggan', icon: 'file-clock-outline' },
+      { title: 'Pertumbuhan Pelanggan', icon: 'account-multiple-plus-outline', slug: 'pertumbuhan' },
+      { title: 'Top Pelanggan', icon: 'trophy', slug: 'top-pelanggan' },
+      { title: 'Riwayat Faktur Pelanggan', icon: 'file-clock-outline', slug: 'riwayat-faktur' },
     ],
   },
   {
     key: 'export',
     title: 'Export Data',
     items: [
-      { title: 'Pelanggan', icon: 'account-arrow-down' },
-      { title: 'Keuangan', icon: 'file-export-outline' },
-      { title: 'Laporan Transaksi', icon: 'file-export' },
-      { title: 'Laporan Persediaan', icon: 'cube-send' },
-      { title: 'Laporan Pegawai', icon: 'account-tie' },
-      { title: 'Laporan Pelanggan', icon: 'text-account' },
+      { title: 'Pelanggan', icon: 'account-arrow-down', slug: 'export-pelanggan' },
+      { title: 'Keuangan', icon: 'file-export-outline', slug: 'export-keuangan' },
+      { title: 'Laporan Transaksi', icon: 'file-export', slug: 'export-transaksi' },
+      { title: 'Laporan Persediaan', icon: 'cube-send', slug: 'export-persediaan' },
+      { title: 'Laporan Pegawai', icon: 'account-tie', slug: 'export-pegawai' },
+      { title: 'Laporan Pelanggan', icon: 'text-account', slug: 'export-pelanggan-data' },
     ],
   },
 ];
@@ -166,7 +168,13 @@ export default function ReportsScreen() {
                       const isFinance = section.key === 'keuangan' && item.slug;
                       const isChart = item.slug === 'chart-of-account';
                       const isTransaction = section.key === 'transaksi' && item.slug;
-                      const isLink = (isFinance || isTransaction) && item.slug;
+                      const isInventory = section.key === 'persediaan' && item.slug;
+                      const isStaff = section.key === 'pegawai' && item.slug;
+                      const isCustomer = section.key === 'pelanggan' && item.slug;
+                      const isExport = section.key === 'export' && item.slug;
+                      const isLink =
+                        (isFinance || isTransaction || isInventory || isStaff || isCustomer || isExport) &&
+                        item.slug;
                       return (
                         <Pressable
                           key={item.title}
@@ -184,6 +192,14 @@ export default function ReportsScreen() {
                               router.push({ pathname: '/reports/finance/[slug]', params });
                             } else if (isTransaction) {
                               router.push({ pathname: '/reports/transactions/[slug]', params });
+                            } else if (isInventory) {
+                              router.push({ pathname: '/reports/inventory/[slug]', params });
+                            } else if (isStaff) {
+                              router.push({ pathname: '/reports/staff/[slug]', params });
+                            } else if (isCustomer) {
+                              router.push({ pathname: '/reports/customers/[slug]', params });
+                            } else if (isExport) {
+                              router.push({ pathname: '/reports/export/[slug]', params });
                             }
                           }}>
                           <View style={styles.itemLeft}>

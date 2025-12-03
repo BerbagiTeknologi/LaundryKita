@@ -8,6 +8,17 @@ type RegisterPayload = {
   email: string;
   phone: string;
   password: string;
+  company_name: string;
+  role?: string;
+};
+
+export type UpdateProfilePayload = {
+  company_name?: string;
+  phone?: string;
+  address?: string;
+  province?: string;
+  city?: string;
+  timezone?: string;
 };
 
 export type AuthResponse = {
@@ -16,7 +27,13 @@ export type AuthResponse = {
     id: number;
     name: string;
     email: string;
+    role?: string;
+    is_owner?: boolean;
+    company_name?: string;
   };
+  role?: string;
+  is_owner?: boolean;
+  company_name?: string;
   [key: string]: unknown;
 };
 
@@ -80,4 +97,26 @@ export async function logout(token: string) {
     const message = (data && (data.message as string)) ?? 'Logout gagal di server.';
     throw new Error(message);
   }
+}
+
+export async function updateProfile(
+  token: string,
+  payload: UpdateProfilePayload,
+): Promise<AuthResponse> {
+  const response = await fetch(`${API_URL}/profile`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = (data && (data.message as string)) ?? 'Profil gagal diperbarui.';
+    throw new Error(message);
+  }
+  return data as AuthResponse;
 }

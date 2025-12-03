@@ -25,6 +25,7 @@ const logoSource = require('@/assets/images/logo.png');
 export default function RegisterScreen() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [name, setName] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +34,7 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (loading) return;
-    if (!name || !email || !phone || !password) {
+    if (!name || !companyName || !email || !phone || !password) {
       setErrorMessage('Semua field wajib diisi.');
       return;
     }
@@ -41,9 +42,17 @@ export default function RegisterScreen() {
     setErrorMessage(null);
     setLoading(true);
     try {
-      const result = await registerRequest({ name, email, phone, password });
+      const result = await registerRequest({
+        name,
+        email,
+        phone,
+        password,
+        company_name: companyName,
+        role: 'pemilik',
+      });
       Alert.alert('Registrasi berhasil', `Selamat datang ${result.user?.name ?? name}!`);
       setName('');
+      setCompanyName('');
       setEmail('');
       setPhone('');
       setPassword('');
@@ -81,6 +90,14 @@ export default function RegisterScreen() {
               <Text style={styles.cardSubtitle}>
                 Pastikan nama, email, dan telepon bisa digunakan dengan benar.
               </Text>
+              <InputField
+                iconName="storefront-outline"
+                placeholder="Nama Outlet (ID Company)"
+                autoCapitalize="words"
+                value={companyName}
+                onChangeText={setCompanyName}
+                editable={!loading}
+              />
               <InputField
                 iconName="account-outline"
                 placeholder="Nama"

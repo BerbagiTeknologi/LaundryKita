@@ -17,6 +17,7 @@ type AccountLink = {
   title: string;
   subtitle?: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  route?: '/account/outlet' | '/account/staff';
 };
 
 const LINKS: AccountLink[] = [
@@ -29,6 +30,7 @@ const LINKS: AccountLink[] = [
     title: 'Kelola Outlet',
     subtitle: 'Edit Outlet, Jam Operasional, Tarif Ongkir',
     icon: 'store-edit',
+    route: '/account/outlet',
   },
   {
     title: 'Kelola Layanan/Produk',
@@ -39,6 +41,7 @@ const LINKS: AccountLink[] = [
     title: 'Kelola Pegawai',
     subtitle: 'Daftar Pegawai, Atur Presensi & Gaji',
     icon: 'account-group-outline',
+    route: '/account/staff',
   },
   {
     title: 'Kelola Keuangan',
@@ -125,13 +128,21 @@ export default function AccountScreen() {
 
         <View style={styles.linkList}>
           {LINKS.map((link) => (
-            <View key={link.title} style={styles.linkRow}>
+            <Pressable
+              key={link.title}
+              style={styles.linkRow}
+              onPress={() => {
+                if (link.route) {
+                  const params = userName ? { user: userName } : undefined;
+                  router.push({ pathname: link.route, params });
+                }
+              }}>
               <MaterialCommunityIcons name={link.icon} size={28} color="#0A4DA8" />
               <View style={styles.linkCopy}>
                 <Text style={styles.linkTitle}>{link.title}</Text>
                 {link.subtitle ? <Text style={styles.linkSubtitle}>{link.subtitle}</Text> : null}
               </View>
-            </View>
+            </Pressable>
           ))}
         </View>
 
