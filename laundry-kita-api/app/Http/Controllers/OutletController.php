@@ -46,7 +46,7 @@ class OutletController extends Controller
             'timezone' => $validated['timezone'],
         ]);
 
-        return redirect()->route('outlet.edit')->with('status', 'Profil outlet berhasil diperbarui.');
+        return redirect()->to(route('outlet.manage') . '#tab-outlet-profile')->with('status', 'Profil outlet berhasil diperbarui.');
     }
 
     public function hours()
@@ -103,7 +103,7 @@ class OutletController extends Controller
             }
         });
 
-        return redirect()->route('outlet.hours')->with('status', 'Jam operasional berhasil diperbarui.');
+        return redirect()->to(route('outlet.manage') . '#tab-outlet-hours')->with('status', 'Jam operasional berhasil diperbarui.');
     }
 
     public function pickup()
@@ -129,8 +129,8 @@ class OutletController extends Controller
 
         // Normalize empty inputs to null so "nullable" rules pass
         $request->merge([
-            'start_time' => $request->input('start_time') ?: null,
-            'end_time' => $request->input('end_time') ?: null,
+            'start_time' => $request->start_time ?: null,
+            'end_time' => $request->end_time ?: null,
         ]);
 
         $validated = $request->validate([
@@ -148,6 +148,20 @@ class OutletController extends Controller
             ]
         );
 
-        return redirect()->route('outlet.pickup')->with('status', 'Jam antar jemput berhasil diperbarui.');
+        return redirect()->to(route('outlet.manage') . '#tab-outlet-pickup')->with('status', 'Jam antar jemput berhasil diperbarui.');
     }
+
+    public function manage()
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+        if (! $user) abort(401);
+
+        $days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+        $hours = DB::table('outlet_hours')->where('user_id', $user->id)->get()->keyBy('day');
+        $pickup = DB::table('outlet_pickup_windows')->where('user_id', $user->id)->first();
+
+        return view('outlet.manage', compact('user','days','hours','pickup'));
+    }
+
 }
