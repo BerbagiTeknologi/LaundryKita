@@ -1,6 +1,37 @@
 @extends('layouts.app')
 @section('title', 'Kelola Outlet | Laundry Kita')
 
+@section('head')
+<style>
+  /* Mobile-friendly horizontal tab scroll */
+  #outlet-tabs .mobile-tab-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  #outlet-tabs .mobile-tab-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  #outlet-tabs .mobile-tab-scroll .nav-link {
+    white-space: nowrap;
+  }
+  /* Compact spacing on small screens */
+  @media (max-width: 576px) {
+    #outlet-tabs .card-body {
+      padding: 1rem;
+    }
+    #outlet-tabs .form-group {
+      margin-bottom: 0.75rem;
+    }
+    #outlet-tabs .text-end {
+      text-align: left !important;
+    }
+  }
+</style>
+@endsection
+
 @section('content')
 <div class="row">
   <div class="col-12 grid-margin stretch-card" id="outlet-tabs">
@@ -11,7 +42,7 @@
           <span class="text-muted small">Atur profil, jam operasional, antar jemput, ongkir, review, dan nota</span>
         </div>
 
-        <ul class="nav nav-tabs mt-3" role="tablist">
+        <ul class="nav nav-tabs mt-3 mobile-tab-scroll" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-outlet-profile-tab" data-bs-toggle="tab" data-bs-target="#tab-outlet-profile" type="button" role="tab">
               <i class="mdi mdi-account-edit me-2"></i>Edit Profil Outlet
