@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
 
     // Layanan
     Route::get('/services/manage', [ServiceController::class, 'manage'])->name('services.manage');
+    Route::post('/services/regular', [ServiceController::class, 'storeRegular'])->name('services.regular.store');
+    Route::post('/services/regular/{service}/update', [ServiceController::class, 'updateRegular'])->name('services.regular.update');
+    Route::post('/services/regular/{service}/delete', [ServiceController::class, 'destroyRegular'])->name('services.regular.delete');
 
     // Akun
     Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
