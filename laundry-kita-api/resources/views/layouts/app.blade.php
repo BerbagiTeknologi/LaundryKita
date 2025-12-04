@@ -165,43 +165,17 @@
               <span class="menu-title">Pelanggan Saya</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" data-bs-toggle="collapse" href="#kelola-outlet" aria-expanded="false" aria-controls="kelola-outlet">
+          <li class="nav-item menu-items {{ request()->routeIs('outlet.*') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('outlet.*') ? 'active' : '' }}" href="{{ route('outlet.manage') }}">
               <span class="menu-icon"><i class="mdi mdi-store"></i></span>
               <span class="menu-title">Kelola Outlet</span>
-              <i class="menu-arrow fa fa-angle-down"></i>
             </a>
-            <div class="collapse collapse-menu" id="kelola-outlet">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="{{ route('outlet.edit') }}"><i class="mdi mdi-account-edit me-2"></i>Edit Profile Outlet</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('outlet.hours') }}"><i class="mdi mdi-clock-outline me-2"></i>Jam Operasional</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('outlet.pickup') }}"><i class="mdi mdi-truck-delivery-outline me-2"></i>Jam Antar Jemput</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-cash-multiple me-2"></i>Tarif Ongkir</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-star-outline me-2"></i>Review dari Pelanggan</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-file-document-outline me-2"></i>Nota</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-swap-horizontal me-2"></i>Mode Transaksi</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-camera-outline me-2"></i>Foto Bukti Cucian</a></li>
-              </ul>
-            </div>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" data-bs-toggle="collapse" href="#kelola-layanan" aria-expanded="false" aria-controls="kelola-layanan">
+          <li class="nav-item menu-items {{ request()->routeIs('services.*') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.manage') }}#tab-services-regular">
               <span class="menu-icon"><i class="mdi mdi-package-variant"></i></span>
               <span class="menu-title">Kelola Layanan</span>
-              <i class="menu-arrow fa fa-angle-down"></i>
             </a>
-            <div class="collapse collapse-menu" id="kelola-layanan">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-washing-machine me-2"></i>Layanan Reguler</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-package-variant-closed me-2"></i>Layanan Paket</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-spray me-2"></i>Parfum dan Item</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-sale me-2"></i>Promo</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-format-list-bulleted me-2"></i>Kategori dan Satuan</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-clipboard-list-outline me-2"></i>Daftar Produk</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-cart-plus me-2"></i>Pembelian Produk</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-warehouse me-2"></i>Stok Opname</a></li>
-              </ul>
-            </div>
           </li>
           <li class="nav-item menu-items">
             <a class="nav-link" href="#">
