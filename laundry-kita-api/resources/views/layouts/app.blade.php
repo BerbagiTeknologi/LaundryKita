@@ -14,10 +14,31 @@
     <link rel="stylesheet" href="{{ asset('vendors/owl-carousel-2/owl.theme.default.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <style>
+      /* Make layout fixed while only main content scrolls */
+      html, body, .container-scroller, .page-body-wrapper, .main-panel {
+        height: 100%;
+      }
+      .container-scroller {
+        overflow: hidden;
+      }
+      .page-body-wrapper {
+        display: flex;
+        overflow: hidden;
+      }
+      .main-panel {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .content-wrapper {
+        flex: 1 1 auto;
+        overflow-y: auto;
+      }
       .sidebar.sidebar-offcanvas {
         position: sticky;
         top: 0;
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
         overflow-y: auto;
       }
       .status-btn {
