@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/services/regular', [ServiceController::class, 'storeRegular'])->name('services.regular.store');
     Route::post('/services/regular/{service}/update', [ServiceController::class, 'updateRegular'])->name('services.regular.update');
     Route::post('/services/regular/{service}/delete', [ServiceController::class, 'destroyRegular'])->name('services.regular.delete');
+    Route::post('/services/regular/group/{group}/rename', [ServiceController::class, 'renameRegularGroup'])->name('services.regular.group.rename');
+    Route::post('/services/regular/group/{group}/delete', [ServiceController::class, 'deleteRegularGroup'])->name('services.regular.group.delete');
 
     // Akun
     Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');

@@ -115,6 +115,9 @@
               <div class="alert alert-info mb-0">Belum ada layanan reguler. Tambahkan dari formulir di atas.</div>
             @else
               @foreach ($regularServices as $group => $services)
+                @php
+                  $groupId = \Illuminate\Support\Str::slug($group, '-') ?: 'group-' . $loop->index;
+                @endphp
                 <div class="card mb-3">
                   <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
@@ -122,6 +125,31 @@
                         <h6 class="mb-0">{{ $group }}</h6>
                         <small class="text-muted">Layanan dalam grup ini</small>
                       </div>
+                      <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#edit-group-{{ $groupId }}">
+                          <i class="mdi mdi-pencil"></i> Edit Grup
+                        </button>
+                        <form method="POST" action="{{ route('services.regular.group.delete', $group) }}" onsubmit="return confirm('Hapus grup ini beserta semua layanan di dalamnya?');">
+                          @csrf
+                          <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="mdi mdi-delete"></i> Hapus Grup
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="collapse mb-3" id="edit-group-{{ $groupId }}">
+                      <form method="POST" action="{{ route('services.regular.group.rename', $group) }}">
+                        @csrf
+                        <div class="row g-2 align-items-end">
+                          <div class="col-md-8 col-lg-9">
+                            <label class="form-label mb-1">Nama Grup</label>
+                            <input type="text" name="new_group_name" class="form-control" value="{{ $group }}" required>
+                          </div>
+                          <div class="col-md-4 col-lg-3 text-end">
+                            <button type="submit" class="btn btn-primary btn-sm w-100"><i class="mdi mdi-content-save"></i> Simpan Grup</button>
+                          </div>
+                        </div>
+                      </form>
                     </div>
                     <div class="table-responsive">
                       <table class="table table-striped align-middle mb-0">

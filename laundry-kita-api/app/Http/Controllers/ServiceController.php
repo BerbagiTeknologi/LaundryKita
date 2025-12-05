@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -170,5 +171,62 @@ class ServiceController extends Controller
 
         return redirect()->to(route('services.manage') . '#tab-services-regular')
             ->with('status', 'Layanan reguler berhasil dihapus.');
+    }
+
+    public function renameRegularGroup(Request $request, string $groupName)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            abort(401);
+        }
+
+        $validated = $request->validate([
+            'new_group_name' => ['required', 'string', 'max:100'],
+        ]);
+
+        $exists = DB::table('regular_services')
+            ->where('user_id', $user->id)
+            ->where('group_name', $groupName)
+            ->exists();
+
+        if (! $exists) {
+            abort(404);
+        }
+
+        DB::table('regular_services')
+            ->where('user_id', $user->id)
+            ->where('group_name', $groupName)
+            ->update([
+                'group_name' => $validated['new_group_name'],
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->to(route('services.manage') . '#tab-services-regular')
+            ->with('status', 'Nama grup layanan berhasil diperbarui.');
+    }
+
+    public function deleteRegularGroup(Request $request, string $groupName)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            abort(401);
+        }
+
+        $exists = DB::table('regular_services')
+            ->where('user_id', $user->id)
+            ->where('group_name', $groupName)
+            ->exists();
+
+        if (! $exists) {
+            abort(404);
+        }
+
+        DB::table('regular_services')
+            ->where('user_id', $user->id)
+            ->where('group_name', $groupName)
+            ->delete();
+
+        return redirect()->to(route('services.manage') . '#tab-services-regular')
+            ->with('status', 'Grup layanan berhasil dihapus beserta layanan di dalamnya.');
     }
 }
