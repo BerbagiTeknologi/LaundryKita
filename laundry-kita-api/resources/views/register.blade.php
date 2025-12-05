@@ -19,6 +19,12 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
+    <style>
+      .auth .card { border-radius: 16px; }
+      .auth .card .form-control,
+      .auth .card .btn,
+      .auth .card .input-group-text { border-radius: 10px; }
+    </style>
   </head>
   <body>
     <div class="container-scroller">
@@ -31,8 +37,28 @@
                 <form method="POST" action="{{ route('register.attempt') }}">
                   @csrf
                   <div class="form-group">
+                    <label>Daftar sebagai *</label>
+                    <select name="role" id="role" class="form-control p_input" required>
+                      <option value="">-- Pilih --</option>
+                      <option value="pelanggan" {{ old('role') === 'pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+                      <option value="pemilik" {{ old('role') === 'pemilik' ? 'selected' : '' }}>Pemilik Outlet / Mitra</option>
+                    </select>
+                    @error('role')
+                      <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                  </div>
+
+                  <input type="hidden" name="name" id="name-hidden" value="{{ old('name') }}">
+                  <div class="form-group" id="group-outlet-name">
                     <label>Nama Outlet *</label>
-                    <input type="text" name="name" value="{{ old('name') }}" class="form-control p_input" required>
+                    <input type="text" id="outlet-name" value="{{ old('outlet_name', old('name')) }}" class="form-control p_input">
+                    @error('name')
+                      <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                  </div>
+                  <div class="form-group d-none" id="group-customer-name">
+                    <label>Nama Lengkap Pelanggan *</label>
+                    <input type="text" id="customer-name" value="{{ old('customer_name', old('name')) }}" class="form-control p_input">
                     @error('name')
                       <small class="text-danger">{{ $message }}</small>
                     @enderror
@@ -41,17 +67,6 @@
                     <label>Email *</label>
                     <input type="email" name="email" value="{{ old('email') }}" class="form-control p_input" required>
                     @error('email')
-                      <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                  </div>
-                  <div class="form-group">
-                    <label>Daftar sebagai *</label>
-                    <select name="role" class="form-control p_input" required>
-                      <option value="">-- Pilih --</option>
-                      <option value="pelanggan" {{ old('role') === 'pelanggan' ? 'selected' : '' }}>Pelanggan</option>
-                      <option value="pemilik" {{ old('role') === 'pemilik' ? 'selected' : '' }}>Pemilik Outlet / Mitra</option>
-                    </select>
-                    @error('role')
                       <small class="text-danger">{{ $message }}</small>
                     @enderror
                   </div>
@@ -107,6 +122,43 @@
           toggleBtn.innerHTML = isHidden ? '<i class="mdi mdi-eye"></i>' : '<i class="mdi mdi-eye-off"></i>';
         });
       }
+
+      // Role-based name input toggle
+      const roleSelect = document.getElementById('role');
+      const outletGroup = document.getElementById('group-outlet-name');
+      const customerGroup = document.getElementById('group-customer-name');
+      const outletInput = document.getElementById('outlet-name');
+      const customerInput = document.getElementById('customer-name');
+      const hiddenName = document.getElementById('name-hidden');
+
+      function syncNameField() {
+        const role = roleSelect?.value;
+        if (!roleSelect || !outletGroup || !customerGroup || !hiddenName) return;
+
+        if (!role) {
+          outletGroup.classList.add('d-none');
+          customerGroup.classList.add('d-none');
+          hiddenName.value = '';
+          return;
+        }
+
+        if (role === 'pelanggan') {
+          outletGroup.classList.add('d-none');
+          customerGroup.classList.remove('d-none');
+          hiddenName.value = customerInput?.value || '';
+        } else {
+          customerGroup.classList.add('d-none');
+          outletGroup.classList.remove('d-none');
+          hiddenName.value = outletInput?.value || '';
+        }
+      }
+
+      roleSelect?.addEventListener('change', syncNameField);
+      outletInput?.addEventListener('input', syncNameField);
+      customerInput?.addEventListener('input', syncNameField);
+
+      // Initialize on load
+      syncNameField();
     </script>
     <!-- endinject -->
   </body>
