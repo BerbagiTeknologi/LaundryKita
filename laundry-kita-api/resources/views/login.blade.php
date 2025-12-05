@@ -19,6 +19,12 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
+    <style>
+      .auth .card { border-radius: 16px; }
+      .auth .card .form-control,
+      .auth .card .btn,
+      .auth .card .input-group-text { border-radius: 10px; }
+    </style>
   </head>
   <body>
     <div class="container-scroller">
