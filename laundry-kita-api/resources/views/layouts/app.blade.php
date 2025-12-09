@@ -100,8 +100,8 @@
     <div class="container-scroller">
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <a class="sidebar-brand brand-logo" href="{{ route('home') }}"><img src="{{ asset('images/logo.svg') }}" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini" href="{{ route('home') }}"><img src="{{ asset('images/logo-mini.svg') }}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo text-white fw-bold text-decoration-none" href="{{ route('home') }}">Laundry Kita</a>
+          <a class="sidebar-brand brand-logo-mini text-white fw-bold text-decoration-none" href="{{ route('home') }}">LK</a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
@@ -160,22 +160,11 @@
               <span class="menu-title">Pesanan</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+          <li class="nav-item menu-items {{ request()->routeIs('reports') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('reports') ? 'active' : '' }}" href="{{ route('reports') }}">
               <span class="menu-icon"><i class="mdi mdi-file-chart"></i></span>
               <span class="menu-title">Laporan</span>
-              <i class="menu-arrow mdi mdi-menu-down"></i>
             </a>
-            <div class="collapse collapse-menu" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-cash-multiple me-2"></i>Keuangan</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-swap-horizontal me-2"></i>Transaksi</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-package-variant-closed me-2"></i>Persediaan</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-account-multiple me-2"></i>Pegawai</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-account-group me-2"></i>Pelanggan</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="mdi mdi-file-export me-2"></i>Export Data</a></li>
-              </ul>
-            </div>
           </li>
           <li class="nav-item nav-category">
             <span class="nav-link">Menu Lainnya</span>
