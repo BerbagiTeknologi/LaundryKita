@@ -85,19 +85,35 @@ class OutletController extends Controller
 
         $userId = $user->id;
         $selectedDays = collect($validated['days'] ?? []);
+        
+        // Get existing hours to preserve times for unchecked days
+        $existingHours = DB::table('outlet_hours')
+            ->where('user_id', $userId)
+            ->get()
+            ->keyBy('day');
 
-        DB::transaction(function () use ($days, $selectedDays, $validated, $userId) {
+        DB::transaction(function () use ($days, $selectedDays, $validated, $userId, $existingHours) {
             foreach ($days as $day) {
                 $isOpen = $selectedDays->contains($day);
+                $existing = $existingHours->get($day);
+
+                // Always use submitted times if provided, otherwise preserve existing times
+                // This allows users to set times for days they plan to open later
+                $openTime = isset($validated['open'][$day]) && $validated['open'][$day] !== ''
+                    ? $validated['open'][$day]
+                    : ($existing->open_time ?? null);
+                $closeTime = isset($validated['close'][$day]) && $validated['close'][$day] !== ''
+                    ? $validated['close'][$day]
+                    : ($existing->close_time ?? null);
 
                 DB::table('outlet_hours')->updateOrInsert(
                     ['user_id' => $userId, 'day' => $day],
                     [
                         'is_open' => $isOpen,
-                        'open_time' => $isOpen ? ($validated['open'][$day] ?? null) : null,
-                        'close_time' => $isOpen ? ($validated['close'][$day] ?? null) : null,
+                        'open_time' => $openTime,
+                        'close_time' => $closeTime,
                         'updated_at' => now(),
-                        'created_at' => now(),
+                        'created_at' => $existing ? $existing->created_at : now(),
                     ]
                 );
             }
