@@ -159,12 +159,7 @@
                 <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                   <h6 class="mb-0">Chart of Account</h6>
                   <a class="btn btn-outline-success btn-sm" href="{{ route('reports.coa.download') }}"><i class="mdi mdi-download"></i> Download Excel</a>
-                  <form method="POST" action="{{ route('reports.coa.upload') }}" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-                    @csrf
-                    <input type="file" name="coa_file" accept=".csv" class="form-control form-control-sm bg-light text-dark" style="max-width: 200px;">
-                    <button class="btn btn-outline-primary btn-sm" type="submit"><i class="mdi mdi-file-excel"></i> Upload Excel</button>
-                  </form>
-                  <a class="btn btn-link btn-sm text-primary" href="{{ route('reports.coa.download') }}"><i class="mdi mdi-download"></i> Contoh Template Excel</a>
+                  <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-upload-coa"><i class="mdi mdi-file-excel"></i> Upload Excel</button>
                   <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-add-coa"><i class="mdi mdi-plus"></i> Tambah Akun</button>
                 </div>
                 <div class="table-responsive">
@@ -420,6 +415,35 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Upload COA -->
+<div class="modal fade" id="modal-upload-coa" tabindex="-1" aria-labelledby="modal-upload-coa-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ route('reports.coa.upload') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-upload-coa-label">Upload COA (CSV)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Pilih file CSV</label>
+            <input type="file" name="coa_file" accept=".csv" class="form-control bg-light text-dark" required>
+            <small class="text-muted">Gunakan template download.</small>
+          </div>
+          <div class="mb-0">
+            <a class="btn btn-link p-0" href="{{ route('reports.coa.download') }}"><i class="mdi mdi-download"></i> Unduh template CSV</a>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Upload</button>
         </div>
       </form>
     </div>
