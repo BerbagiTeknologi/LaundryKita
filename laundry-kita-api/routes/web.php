@@ -5,6 +5,8 @@ use App\Http\Controllers\OutletController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AttendanceRuleItemController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -27,12 +29,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/outlet/hours', [\App\Http\Controllers\OutletController::class, 'updateHours'])->name('outlet.hours.update');
     Route::get('/outlet/pickup', [\App\Http\Controllers\OutletController::class, 'pickup'])->name('outlet.pickup');
     Route::post('/outlet/pickup', [\App\Http\Controllers\OutletController::class, 'updatePickup'])->name('outlet.pickup.update');
+    Route::post('/outlet/shipping/settings', [\App\Http\Controllers\OutletController::class, 'saveShippingSettings'])->name('outlet.shipping.save');
+    Route::post('/outlet/shipping/zones', [\App\Http\Controllers\OutletController::class, 'storeShippingZone'])->name('outlet.shipping.zone.store');
+    Route::post('/outlet/shipping/zones/{zone}/delete', [\App\Http\Controllers\OutletController::class, 'destroyShippingZone'])->name('outlet.shipping.zone.delete');
+    Route::post('/outlet/reviews/template', [\App\Http\Controllers\OutletController::class, 'saveReviewTemplate'])->name('outlet.review.template');
+    Route::post('/outlet/receipts/settings', [\App\Http\Controllers\OutletController::class, 'saveReceiptSettings'])->name('outlet.receipt.settings');
+    Route::post('/outlet/receipts', [\App\Http\Controllers\OutletController::class, 'storeReceiptProof'])->name('outlet.receipt.store');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports');
     Route::post('/reports/coa', [ReportController::class, 'storeCoa'])->name('reports.coa.store');
     Route::post('/reports/coa/{coa}/update', [ReportController::class, 'updateCoa'])->name('reports.coa.update');
     Route::post('/reports/coa/{coa}/delete', [ReportController::class, 'destroyCoa'])->name('reports.coa.delete');
     Route::get('/reports/coa/download', [ReportController::class, 'downloadCoa'])->name('reports.coa.download');
     Route::post('/reports/coa/upload', [ReportController::class, 'uploadCoa'])->name('reports.coa.upload');
+    Route::post('/reports/coa/mapping', [ReportController::class, 'storeMapping'])->name('reports.coa.mapping.store');
+    Route::post('/reports/journal', [ReportController::class, 'storeJournal'])->name('reports.journal.store');
+    Route::post('/reports/journal/line/{line}/reconcile', [ReportController::class, 'reconcileLine'])->name('reports.journal.reconcile');
 
     // Layanan
     Route::get('/services/manage', [ServiceController::class, 'manage'])->name('services.manage');
@@ -62,6 +73,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/services/product', [ServiceController::class, 'storeProduct'])->name('services.product.store');
     Route::post('/services/product/{product}/update', [ServiceController::class, 'updateProduct'])->name('services.product.update');
     Route::post('/services/product/{product}/delete', [ServiceController::class, 'destroyProduct'])->name('services.product.delete');
+
+    // Pegawai
+    Route::get('/employees/manage', [EmployeeController::class, 'manage'])->name('employees.manage');
+    Route::post('/employees/shifts', [EmployeeController::class, 'storeShift'])->name('employees.shifts.store');
+    Route::post('/employees/shifts/{shift}/update', [EmployeeController::class, 'updateShift'])->name('employees.shifts.update');
+    Route::post('/employees/shifts/{shift}/delete', [EmployeeController::class, 'deleteShift'])->name('employees.shifts.delete');
+    Route::post('/employees/grades', [EmployeeController::class, 'storeGrade'])->name('employees.grades.store');
+    Route::post('/employees/grades/{grade}/update', [EmployeeController::class, 'updateGrade'])->name('employees.grades.update');
+    Route::post('/employees/grades/{grade}/delete', [EmployeeController::class, 'deleteGrade'])->name('employees.grades.delete');
+    Route::post('/employees', [EmployeeController::class, 'storeEmployee'])->name('employees.store');
+    Route::post('/employees/{employee}/update', [EmployeeController::class, 'updateEmployee'])->name('employees.update');
+    Route::post('/employees/{employee}/delete', [EmployeeController::class, 'deleteEmployee'])->name('employees.delete');
+    Route::post('/attendance/rules', [EmployeeController::class, 'saveAttendanceRule'])->name('attendance.rules.save');
+    Route::post('/attendance/rules/delete', [EmployeeController::class, 'deleteAttendanceRule'])->name('attendance.rules.delete');
+    Route::post('/attendance/rules/items', [EmployeeController::class, 'storeRuleItem'])->name('attendance.rules.items.store');
+    Route::post('/attendance/rules/items/{item}/delete', [EmployeeController::class, 'deleteRuleItem'])->name('attendance.rules.items.delete');
+    Route::post('/attendance/checkin', [EmployeeController::class, 'checkIn'])->name('attendance.checkin');
 
     // Akun
     Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
